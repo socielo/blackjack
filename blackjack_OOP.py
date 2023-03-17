@@ -37,8 +37,10 @@ class Blackjack:
         while True:
             try:
                 self.player_funds = float(input("How much would you like to deposit?: "))
-                if self.player_funds > 0:
+                if self.player_funds >= 10:
                     break
+                if self.player_funds < 10:
+                    print("The minimum deposit is $10.00.")
             except ValueError:
                 print("Please enter a valid number.")
 
@@ -46,8 +48,10 @@ class Blackjack:
         while True:
             try:
                 bet = float(input("Enter your bet: "))
-                if self.player_funds >= bet > 0:
+                if self.player_funds >= bet >= 10:
                     return bet
+                if bet < 10:
+                    print("The minimum bet is $10.00.")
                 else:
                     print("Please enter a valid bet.")
             except ValueError:
@@ -55,6 +59,9 @@ class Blackjack:
 
     def play_game(self):
         while True:
+            if self.player_funds < 10:
+                print("You don't have enough funds to play.")
+                quit()
             if len(self.deck.cards) < 10:
                 self.deck = Deck()
                 self.deck.shuffle()
@@ -75,39 +82,29 @@ class Blackjack:
                     new_card = self.deck.deal_card()
                     player_hand.append(new_card)
                     print("Player's hand:", player_hand)
-                    if sum(card.value for card in player_hand) > 21:
-                        print("Player busts! Dealer wins.")
-                        self.player_funds -= bet
 
                 elif choice.lower() == "stand":
                     break
 
-                elif choice.lower() == "double down":
+                if choice.lower() == "double down":
                     if bet*2 > self.player_funds:
                         print("You don't have enough funds to double down.")
                         choice = input("Do you want to hit or stand? ")
                         if choice.lower() == "hit":
                             new_card = self.deck.deal_card()
                             player_hand.append(new_card)
-                            print("Player's hand:", player_hand)
-                            if sum(card.value for card in player_hand) > 21:
-                                print("Player busts! Dealer wins.")
-                                self.player_funds -= bet
 
                         elif choice.lower() == "stand":
                             break
 
-                    elif len(player_hand) == 2:
+                    elif len(player_hand) == 2 and bet*2 < self.player_funds and choice.lower() == "double down":
                         bet *= 2
                         new_card = self.deck.deal_card()
                         player_hand.append(new_card)
-                        print("Player's hand:", player_hand)
-                        if sum(card.value for card in player_hand) > 21:
-                            print("Player busts! Dealer wins.")
-                            self.player_funds -= bet
-                            break
-                        else:
-                            break
+                        break
+                    elif len(player_hand) > 2:
+                        print("You can only double down with your initial hand.")
+
                     else:
                         print("You can only double down with your initial hand.")
 
@@ -142,7 +139,7 @@ class Blackjack:
             if self.player_funds <= 0:
                 print("You ran out of funds! You lose.")
                 quit()
-            print("Remaining funds:", self.player_funds)
+            print(f"Remaining funds: ${self.player_funds:.2f}")
 
 
 while True:
