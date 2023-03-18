@@ -10,8 +10,39 @@ root.geometry("1200x800")
 root.configure(bg="green")
 
 
+def stand():
+    global player_total, dealer_total, player_score
+    player_total = 0
+    dealer_total = 0
+
+    for score in dealer_score:
+        dealer_total += score
+
+    for score in player_score:
+        player_total += score
+
+    card_button.config(state="disabled")
+    stand_button.config(state="disabled")
+    double_button.config(state="disabled")
+
+    if dealer_total >= 17:
+        if dealer_total > 21:
+            messagebox.showinfo("Player wins!", "Bust: Dealer busted!")
+        elif dealer_total == player_total:
+            messagebox.showinfo("Push!", "Push: It's a tie!")
+        elif dealer_total > player_total:
+            messagebox.showinfo("Dealer Wins!", "Dealer Wins: Dealer wins!")
+        else:
+            messagebox.showinfo("Player Wins!", "Player Wins: Player wins!")
+    else:
+        dealer_hit()
+        stand()
+
+
 def blackjack_shuffle(player):
     global player_total, dealer_total, player_score
+    if player_spot > 2:
+        double_button.config(state="disabled")
 
     player_total = 0
     dealer_total = 0
@@ -20,6 +51,7 @@ def blackjack_shuffle(player):
             if dealer_score[0] + dealer_score[1] == 21:
 
                 blackjack_status["dealer"] = "yes"
+        
 
     if player == "player":
         if len(player_score) == 2:
@@ -40,13 +72,10 @@ def blackjack_shuffle(player):
                 for card_num, card in enumerate(player_score):
                     if card == 11:
                         player_score[card_num] = 1
-
-
                         player_total = 0
                         for score in player_score:
 
                             player_total += score
-
 
                         if player_total > 21:
                             blackjack_status["player"] = "bust"
@@ -57,6 +86,26 @@ def blackjack_shuffle(player):
                         blackjack_status["player"] = "yes"
                     if player_total > 21:
                         blackjack_status["player"] = "bust"
+
+            elif dealer_total > 21:
+                for card_num, card in enumerate(dealer_score):
+                    if card == 11:
+                        dealer_score[card_num] = 1
+
+                        dealer_total = 0
+                        for score in dealer_score:
+
+                            dealer_total += score
+
+                        if dealer_total > 21:
+                            blackjack_status["dealer"] = "bust"
+
+                else:
+
+                    if dealer_total == 21:
+                        blackjack_status["dealer"] = "yes"
+                    if dealer_total > 21:
+                        blackjack_status["dealer"] = "bust"
 
     if len(dealer_score) == 2 and len(player_score) == 2:
 
@@ -73,7 +122,6 @@ def blackjack_shuffle(player):
             card_button.config(state="disabled")
             stand_button.config(state="disabled")
             double_button.config(state="disabled")
-
 
         elif blackjack_status["player"] == "yes":
             messagebox.showinfo("Blackjack!", "Blackjack: Player Wins!")
@@ -105,7 +153,7 @@ def blackjack_shuffle(player):
                 double_button.config(state="disabled")
 
     if blackjack_status["player"] == "bust":
-        messagebox.showinfo("Player Busts!", f"Player Loses! {player_total}")
+        messagebox.showinfo("Bust!", f"Player Busts! {player_total}")
 
         card_button.config(state="disabled")
         stand_button.config(state="disabled")
@@ -154,7 +202,6 @@ def shuffle():
         for value in values:
             deck.append(f"{value}_of_{suit}")
 
-
     global dealer, player, dealer_spot, player_spot, dealer_score, player_score
     dealer = []
     player = []
@@ -167,12 +214,12 @@ def shuffle():
         player_hit()
         dealer_hit()
 
-    root.title(f"Blackjack | Cards left: {len(deck)}")
+    root.title(f"Blackjack")
 
 
 def dealer_hit():
-    global dealer_spot
-    if dealer_spot < 5:
+    global dealer_spot, player_total, dealer_total, player_score
+    if dealer_spot <= 5:
         try:
             dealer_card = r.choice(deck)
             deck.remove(dealer_card)
@@ -212,7 +259,22 @@ def dealer_hit():
                 dealer_label_5.config(image=dealer_image5)
                 dealer_spot += 1
 
-            root.title(f"Blackjack | Cards left: {len(deck)}")
+                player_total = 0
+                dealer_total = 0
+
+                for score in player_score:
+                    player_total += score
+
+                for score in dealer_score:
+                    dealer_total += score
+
+                if dealer_total <= 21:
+                    card_button.config(state="disabled")
+                    stand_button.config(state="disabled")
+                    double_button.config(state="disabled")
+                    messagebox.showinfo("Dealer wins!", "Dealer wins: Dealer Wins!")
+
+            root.title(f"Blackjack")
 
         except:
             root.title("Blackjack | Cards left: 0")
@@ -221,8 +283,9 @@ def dealer_hit():
 
 
 def player_hit():
-    global player_spot
-    if player_spot < 5:
+    global player_spot, dealer_total, player_total, player_score
+
+    if player_spot <= 5:
         try:
 
             player_card = r.choice(deck)
@@ -264,7 +327,22 @@ def player_hit():
                 player_label_5.config(image=player_image5)
                 player_spot += 1
 
-            root.title(f"Blackjack | Cards left: {len(deck)}")
+                player_total = 0
+                dealer_total = 0
+
+                for score in player_score:
+                    player_total += score
+
+                for score in dealer_score:
+                    dealer_total += score
+
+                if player_total <= 21:
+                    card_button.config(state="disabled")
+                    stand_button.config(state="disabled")
+                    double_button.config(state="disabled")
+                    messagebox.showinfo("Player wins!", "Player wins: Player Wins!")
+
+            root.title(f"Blackjack")
 
         except:
             root.title("Blackjack | Cards left: 0")
@@ -286,7 +364,7 @@ def deal_cards():
         global player_image
         player_image = resize_cards(f"cards/{card}.png")
 
-        root.title(f"Blackjack | Cards left: {len(deck)}")
+        root.title(f"Blackjack")
 
     except:
         root.title("Blackjack | Cards left: 0")
@@ -340,7 +418,7 @@ shuffle_button.grid(row=0, column=0)
 card_button = Button(button_frame, text="Hit", font=("Arial", 15), command=player_hit)
 card_button.grid(row=0, column=1, padx=10)
 
-stand_button = Button(button_frame, text="Stand", font=("Arial", 15))
+stand_button = Button(button_frame, text="Stand", font=("Arial", 15), command=stand)
 stand_button.grid(row=0, column=2, padx=10)
 
 double_button = Button(button_frame, text="Double Down", font=("Arial", 15))
