@@ -2,6 +2,8 @@ from tkinter import *
 from tkinter import messagebox
 import random as r
 from PIL import ImageTk, Image
+from tkinter import simpledialog
+global balance, bet
 
 root = Tk()
 root.title("Blackjack")
@@ -10,8 +12,58 @@ root.geometry("1200x800")
 root.configure(bg="green")
 
 
+balance = 0
+deposited = False
+bet_placed = False
+bet_amount = 0
+
+
+def deposit():
+    global balance, deposited
+    if not deposited:
+        amount = simpledialog.askfloat("Deposit", "Enter amount to deposit:", parent=root)
+        if amount is not None and amount >= 10:
+            balance += amount
+            balance_label.config(text=f"Balance: {balance:.2f}", bg='green')
+            deposit_button.config(state=DISABLED, highlightbackground='green', highlightcolor='green')
+            bet_button.config(state=NORMAL, highlightbackground='green', highlightcolor='green')
+            deposited = True
+
+
+def bet():
+    global balance, bet_amount, bet_placed, player_score, dealer_score, player_spot, dealer_spot
+    amount = simpledialog.askfloat("Bet", "Enter amount to bet:", parent=root)
+    if 10 <= amount <= balance and dealer_score not in [17, 18, 19, 20, 21]:
+        balance -= amount
+        bet_amount = amount
+        balance_label.config(text=f"Balance: {balance:.2f}", bg='green')
+        bet_placed = True
+        bet_button.config(state=DISABLED)
+        card_button.config(state=NORMAL)
+        stand_button.config(state=NORMAL)
+        if player_spot > 2 or dealer_spot > 2 or dealer_score in [17, 18, 19, 20, 21]:
+            card_button.config(state=DISABLED)
+            stand_button.config(state=DISABLED)
+            shuffle_button.config(state=NORMAL)
+
+
+money_frame = Frame(root, bg='green')
+money_frame.pack(side=TOP, pady=15)
+
+balance_label = Label(money_frame, text=f"Balance: {balance:.2f}", bg='green')
+balance_label.grid(row=1, column=0, columnspan=2, pady=10, sticky=E)
+
+deposit_button = Button(money_frame, text="Deposit", highlightbackground='green', highlightcolor='green',
+                        command=deposit)
+deposit_button.grid(row=2, column=0, pady=10, sticky=E)
+
+bet_button = Button(money_frame, text="Bet", highlightbackground='green', highlightcolor='green',
+                    command=bet, state=DISABLED)
+bet_button.grid(row=2, column=1, pady=10, sticky=E)
+
+
 def stand():
-    global player_total, dealer_total, player_score
+    global player_total, dealer_total, player_score, balance, bet_amount
     player_total = 0
     dealer_total = 0
 
@@ -23,27 +75,30 @@ def stand():
 
     card_button.config(state="disabled")
     stand_button.config(state="disabled")
-    double_button.config(state="disabled")
+    bet_button.config(state=NORMAL)
 
     if dealer_total >= 17:
         if dealer_total > 21:
             messagebox.showinfo("Player wins!", "Bust: Dealer busted!")
+            balance += bet_amount*2
+            balance_label.config(text=f"Balance: {balance:.2f}", bg='green')
         elif dealer_total == player_total:
             messagebox.showinfo("Push!", "Push: It's a tie!")
+            balance += bet_amount
+            balance_label.config(text=f"Balance: {balance:.2f}", bg='green')
         elif dealer_total > player_total:
             messagebox.showinfo("Dealer Wins!", "Dealer Wins: Dealer wins!")
         else:
             messagebox.showinfo("Player Wins!", "Player Wins: Player wins!")
+            balance += bet_amount*2
+            balance_label.config(text=f"Balance: {balance:.2f}", bg='green')
     else:
         dealer_hit()
         stand()
 
 
 def blackjack_shuffle(player):
-    global player_total, dealer_total, player_score
-    if player_spot > 2:
-        double_button.config(state="disabled")
-
+    global player_total, dealer_total, player_score, balance, bet, player_spot, dealer_spot
     player_total = 0
     dealer_total = 0
     if player == "dealer":
@@ -51,7 +106,6 @@ def blackjack_shuffle(player):
             if dealer_score[0] + dealer_score[1] == 21:
 
                 blackjack_status["dealer"] = "yes"
-        
 
     if player == "player":
         if len(player_score) == 2:
@@ -114,21 +168,24 @@ def blackjack_shuffle(player):
             messagebox.showinfo("Push!", "Push: It's a Tie!")
             card_button.config(state="disabled")
             stand_button.config(state="disabled")
-            double_button.config(state="disabled")
+            bet_button.config(state=NORMAL)
 
         elif blackjack_status["dealer"] == "yes":
             messagebox.showinfo("Blackjack!", "Blackjack: Dealer Wins!")
 
             card_button.config(state="disabled")
             stand_button.config(state="disabled")
-            double_button.config(state="disabled")
+
+            bet_button.config(state=NORMAL)
 
         elif blackjack_status["player"] == "yes":
             messagebox.showinfo("Blackjack!", "Blackjack: Player Wins!")
-
+            balance += bet_amount*2.5
+            balance_label.config(text=f"Balance: {balance:.2f}", bg='green')
             card_button.config(state="disabled")
             stand_button.config(state="disabled")
-            double_button.config(state="disabled")
+            bet_button.config(state=NORMAL)
+
     else:
 
         if blackjack_status["dealer"] == "yes" and blackjack_status["player"] == "yes":
@@ -136,27 +193,30 @@ def blackjack_shuffle(player):
             messagebox.showinfo("Push!", "Push: It's a Tie!")
             card_button.config(state="disabled")
             stand_button.config(state="disabled")
-            double_button.config(state="disabled")
+            bet_button.config(state=NORMAL)
 
         elif blackjack_status["dealer"] == "yes":
             if len(dealer_score) > 2:
                 messagebox.showinfo("21!", "21: Dealer Wins!")
                 card_button.config(state="disabled")
                 stand_button.config(state="disabled")
-                double_button.config(state="disabled")
+                bet_button.config(state=NORMAL)
 
         elif blackjack_status["player"] == "yes":
             if len(player_score) > 2:
                 messagebox.showinfo("21!", "21: Player Wins!")
+                balance += bet_amount*2.5
+                balance_label.config(text=f"Balance: {balance:.2f}", bg='green')
                 card_button.config(state="disabled")
                 stand_button.config(state="disabled")
-                double_button.config(state="disabled")
+                bet_button.config(state=NORMAL)
 
     if blackjack_status["player"] == "bust":
         messagebox.showinfo("Bust!", f"Player Busts! {player_total}")
 
         card_button.config(state="disabled")
         stand_button.config(state="disabled")
+        bet_button.config(state=NORMAL)
 
 
 def resize_cards(card):
@@ -170,16 +230,16 @@ def resize_cards(card):
 
 
 def shuffle():
-    global blackjack_status, player_total, dealer_total
+    global blackjack_status, player_total, dealer_total, card_button, stand_button
+
+    bet_button.config(state=DISABLED)
+    card_button.config(state=NORMAL)
+    stand_button.config(state=NORMAL)
 
     player_total = 0
     dealer_total = 0
 
     blackjack_status = {"dealer": "no", "player": "no"}
-
-    card_button.config(state="normal")
-    stand_button.config(state="normal")
-    double_button.config(state="normal")
 
     dealer_label_1.config(image="")
     dealer_label_2.config(image="")
@@ -192,6 +252,7 @@ def shuffle():
     player_label_3.config(image="")
     player_label_4.config(image="")
     player_label_5.config(image="")
+    shuffle_button.config(state=DISABLED)
 
     suits = ["hearts", "diamonds", "clubs", "spades"]
     values = range(2, 15)
@@ -271,7 +332,8 @@ def dealer_hit():
                 if dealer_total <= 21:
                     card_button.config(state="disabled")
                     stand_button.config(state="disabled")
-                    double_button.config(state="disabled")
+                    bet_button.config(state=NORMAL)
+
                     messagebox.showinfo("Dealer wins!", "Dealer wins: Dealer Wins!")
 
             root.title(f"Blackjack")
@@ -339,7 +401,7 @@ def player_hit():
                 if player_total <= 21:
                     card_button.config(state="disabled")
                     stand_button.config(state="disabled")
-                    double_button.config(state="disabled")
+                    bet_button.config(state=NORMAL)
                     messagebox.showinfo("Player wins!", "Player wins: Player Wins!")
 
             root.title(f"Blackjack")
@@ -410,19 +472,24 @@ player_label_5 = Label(player_frame, text='', bg='green')
 player_label_5.grid(row=1, column=4, pady=20, padx=20)
 
 button_frame = Frame(root, bg='green')
-button_frame.pack(pady=20)
+button_frame.pack(side=BOTTOM, pady=15)
 
-shuffle_button = Button(button_frame, text="Shuffle", font=("Arial", 15), command=shuffle)
-shuffle_button.grid(row=0, column=0)
+shuffle_button = Button(button_frame, text="Shuffle", bg='green', font=("Arial", 15),
+                        command=shuffle, padx=20, pady=10, highlightbackground='green')
+shuffle_button.pack(side=LEFT)
 
-card_button = Button(button_frame, text="Hit", font=("Arial", 15), command=player_hit)
-card_button.grid(row=0, column=1, padx=10)
+card_button = Button(button_frame, text="Hit", bg='green', font=("Arial", 15), command=player_hit,
+                     padx=20, pady=10, highlightbackground='green')
+card_button.pack(side=LEFT)
 
-stand_button = Button(button_frame, text="Stand", font=("Arial", 15), command=stand)
-stand_button.grid(row=0, column=2, padx=10)
+stand_button = Button(button_frame, text="Stand", bg='green', font=("Arial", 15), command=stand,
+                      padx=20, pady=10, highlightbackground='green')
+stand_button.pack(side=LEFT)
 
-double_button = Button(button_frame, text="Double Down", font=("Arial", 15))
-double_button.grid(row=0, column=3)
+shuffle_button.config(state=DISABLED)
+card_button.config(state=DISABLED)
+stand_button.config(state=DISABLED)
+
+
 shuffle()
-
 root.mainloop()
