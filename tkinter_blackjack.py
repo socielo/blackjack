@@ -1,9 +1,7 @@
-from tkinter import *
-from tkinter import messagebox
-import random as r
+from tkinter import Tk, DISABLED, NORMAL, Frame, LabelFrame, Label,\
+    TOP, Button, BOTTOM, LEFT, messagebox, simpledialog
 from PIL import ImageTk, Image
-from tkinter import simpledialog
-global balance, bet
+import random as r
 
 root = Tk()
 root.title("Blackjack")
@@ -12,9 +10,9 @@ root.geometry("1200x800")
 root.configure(bg="green")
 
 balance = 0
+bet_amount = 0
 deposited = False
 bet_placed = False
-bet_amount = 0
 
 
 def deposit():
@@ -32,6 +30,7 @@ def deposit():
 
 
 def bet():
+
     global balance, bet_amount, bet_placed, player_score, dealer_score, dealer_spot, player_spot
     amount = simpledialog.askfloat("Bet", "Enter amount to bet:", parent=root)
 
@@ -62,7 +61,8 @@ def bet():
 
 
 def stand():
-    global player_total, dealer_total, player_score, balance, bet_amount
+
+    global player_total, dealer_total, player_score, balance, bet_amount, dealer_image_1_show
     player_total = 0
     dealer_total = 0
 
@@ -78,20 +78,28 @@ def stand():
 
     if dealer_total >= 17:
         if dealer_total > 21:
+            dealer_image1 = dealer_image_1_show
+            dealer_label_1.config(image=dealer_image1)
             messagebox.showinfo("Player wins!", "Bust: Dealer busted!")
             balance += bet_amount*2
             balance_label.config(text=f"Balance: {balance:.2f}", bg='green')
             return
         elif dealer_total == player_total:
+            dealer_image1 = dealer_image_1_show
+            dealer_label_1.config(image=dealer_image1)
             messagebox.showinfo("Push!", "Push: It's a tie!")
             balance += bet_amount
             balance_label.config(text=f"Balance: {balance:.2f}", bg='green')
             return
         elif dealer_total > player_total:
-            messagebox.showinfo("Dealer Wins!", "Dealer Wins: Dealer wins!")
+            dealer_image1 = dealer_image_1_show
+            dealer_label_1.config(image=dealer_image1)
+            messagebox.showinfo("Dealer Wins!", "Dealer wins!")
             return
         else:
-            messagebox.showinfo("Player Wins!", "Player Wins: Player wins!")
+            dealer_image1 = dealer_image_1_show
+            dealer_label_1.config(image=dealer_image1)
+            messagebox.showinfo("Player Wins!", "Player Wins!")
             balance += bet_amount*2
             balance_label.config(text=f"Balance: {balance:.2f}", bg='green')
             return
@@ -99,8 +107,13 @@ def stand():
         dealer_hit()
         stand()
 
+
+
 def blackjack_shuffle(player):
-    global player_total, dealer_total, player_score, balance, bet_amount, player_spot, dealer_spot
+
+    global player_total, dealer_total, player_score, balance, bet_amount,\
+        player_spot, dealer_spot, dealer_image1, dealer_image_1_show
+
     if player_spot == 2 and player_score == 21:
         card_button.config(state=DISABLED)
         stand_button.config(state=DISABLED)
@@ -197,6 +210,8 @@ def blackjack_shuffle(player):
             return
 
         elif blackjack_status["dealer"] == "yes":
+            dealer_image1 = dealer_image_1_show
+            dealer_label_1.config(image=dealer_image1)
             messagebox.showinfo("Blackjack!", "Blackjack: Dealer Wins!")
             card_button.config(state=DISABLED)
             stand_button.config(state=DISABLED)
@@ -205,6 +220,8 @@ def blackjack_shuffle(player):
             return
 
         elif blackjack_status["player"] == "yes":
+            dealer_image1 = dealer_image_1_show
+            dealer_label_1.config(image=dealer_image1)
             balance_label.config(text=f"Balance: {balance:.2f}", bg='green')
             messagebox.showinfo("Blackjack!", "Blackjack: Player Wins!")
             balance += bet_amount * 2.5
@@ -216,6 +233,8 @@ def blackjack_shuffle(player):
 
     else:
         if blackjack_status["dealer"] == "yes" and blackjack_status["player"] == "yes":
+            dealer_image1 = dealer_image_1_show
+            dealer_label_1.config(image=dealer_image1)
             messagebox.showinfo("Push!", "Push: It's a Tie!")
             balance += bet_amount
             card_button.config(state=DISABLED)
@@ -226,7 +245,9 @@ def blackjack_shuffle(player):
 
         elif blackjack_status["dealer"] == "yes":
             if len(dealer_score) > 2:
-                messagebox.showinfo("21!", "21: Dealer Wins!")
+                dealer_image1 = dealer_image_1_show
+                dealer_label_1.config(image=dealer_image1)
+                messagebox.showinfo("Blackjack", "Blackjack: Dealer Wins!")
                 card_button.config(state=DISABLED)
                 stand_button.config(state=DISABLED)
                 bet_button.config(state=NORMAL)
@@ -235,8 +256,10 @@ def blackjack_shuffle(player):
 
         elif blackjack_status["player"] == "yes":
             if len(player_score) > 2:
-                messagebox.showinfo("21!", "21: Player Wins!")
-                balance += bet_amount*2
+                dealer_image1 = dealer_image_1_show
+                dealer_label_1.config(image=dealer_image1)
+                messagebox.showinfo("Blackjack!", "Blackjack: Player Wins!")
+                balance += bet_amount*2.5
                 balance_label.config(text=f"Balance: {balance:.2f}", bg='green')
                 card_button.config(state=DISABLED)
                 stand_button.config(state=DISABLED)
@@ -244,6 +267,8 @@ def blackjack_shuffle(player):
                 return
 
     if blackjack_status["player"] == "bust":
+        dealer_image1 = dealer_image_1_show
+        dealer_label_1.config(image=dealer_image1)
         messagebox.showinfo("Bust!", "Player Busts!")
         card_button.config(state=DISABLED)
         stand_button.config(state=DISABLED)
@@ -251,15 +276,21 @@ def blackjack_shuffle(player):
         return
 
 
+
 def resize_cards(card):
+
     global our_card_image
     our_card_image = Image.open(card)
     our_card_resize = our_card_image.resize((150, 218))
     our_card_image = ImageTk.PhotoImage(our_card_resize)
     return our_card_image
 
+
+
 def shuffle():
+
     global blackjack_status, player_total, dealer_total, card_button, stand_button
+
     global dealer, player, dealer_spot, player_spot, dealer_score, player_score, deck
     bet_button.config(state=DISABLED)
     card_button.config(state=NORMAL)
@@ -307,9 +338,12 @@ def shuffle():
         quit()
 
 
+
 def dealer_hit():
-    global dealer_spot, player_total, dealer_total, player_score
-    global dealer_image1, dealer_image2, dealer_image3, dealer_image4, dealer_image5
+
+    global dealer_spot, player_total, dealer_total, player_score, dealer_image_1_show
+
+    global dealer_image1, dealer_image2, dealer_image3, dealer_image4, dealer_image5, is_first_card
     if blackjack_status["player"] == "yes" or blackjack_status["dealer"] == "yes":
         card_button.config(state=DISABLED)
         stand_button.config(state=DISABLED)
@@ -327,9 +361,9 @@ def dealer_hit():
             else:
                 dealer_score.append(dcard)
 
-
             if dealer_spot == 0:
-                dealer_image1 = resize_cards(f"cards/{dealer_card}.png")
+                dealer_image1 = resize_cards("cards/hidden.png")
+                dealer_image_1_show = resize_cards(f"cards/{dealer_card}.png")
                 dealer_label_1.config(image=dealer_image1)
                 dealer_spot += 1
 
@@ -366,7 +400,10 @@ def dealer_hit():
                     card_button.config(state=DISABLED)
                     stand_button.config(state=DISABLED)
                     bet_button.config(state=NORMAL)
-                    messagebox.showinfo("Dealer wins!", "Dealer wins: Dealer Wins!")
+                    dealer_image1 = dealer_image_1_show
+                    dealer_label_1.config(image=dealer_image1)
+                    messagebox.showinfo("Dealer wins!", "Dealer wins!")
+
 
             root.title(f"Blackjack")
 
@@ -392,9 +429,11 @@ def dealer_hit():
         bet_button.config(state=NORMAL)
 
 
+
 def player_hit():
     global player_spot, dealer_total, player_total, player_score, balance, bet_amount
-    global player_image1, player_image2, player_image3, player_image4, player_image5
+    global player_image1, player_image2, player_image3, player_image4, player_image5, dealer_image_1_show
+
     if blackjack_status["player"] == "yes" or blackjack_status["dealer"] == "yes":
         card_button.config(state=DISABLED)
         stand_button.config(state=DISABLED)
@@ -450,7 +489,10 @@ def player_hit():
                     stand_button.config(state=DISABLED)
                     bet_button.config(state=NORMAL)
                     balance += bet_amount*2
-                    messagebox.showinfo("Player wins!", "Player wins: Player Wins!")
+                    dealer_image1 = dealer_image_1_show
+                    dealer_label_1.config(image=dealer_image1)
+                    messagebox.showinfo("Player wins!", "Player Wins!")
+
 
             root.title(f"Blackjack")
 
@@ -460,17 +502,20 @@ def player_hit():
         blackjack_shuffle("player")
 
 
+
 def deal_cards():
     try:
         card = r.choice(deck)
         deck.remove(card)
         dealer.append(card)
+
         global dealer_image
         dealer_image = resize_cards(f"cards/{card}.png")
 
         card = r.choice(deck)
         deck.remove(card)
         player.append(card)
+
         global player_image
         player_image = resize_cards(f"cards/{card}.png")
 
@@ -550,4 +595,3 @@ card_button.config(state=DISABLED)
 stand_button.config(state=DISABLED)
 
 root.mainloop()
-
