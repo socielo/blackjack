@@ -1,4 +1,4 @@
-from tkinter import Tk, DISABLED, NORMAL, Frame, LabelFrame, Label,\
+from tkinter import Tk, DISABLED, NORMAL, Frame, LabelFrame, Label, \
     TOP, Button, BOTTOM, LEFT, messagebox, simpledialog
 from PIL import ImageTk, Image
 import random as r
@@ -21,16 +21,15 @@ def deposit():
         amount = simpledialog.askfloat("Deposit", "Enter amount to deposit:", parent=root)
         if amount is not None and amount >= 10:
             balance += amount
-            balance_label.config(text=f"Balance: {balance:.2f}", bg='green')
+            balance_label.config(text=f"Balance: ${balance:.2f}", bg='green')
             deposit_button.config(state=DISABLED, highlightbackground='green', highlightcolor='green')
             bet_button.config(state=NORMAL, highlightbackground='green', highlightcolor='green')
             deposited = True
         else:
-            messagebox.showinfo("Invalid Deposit", "The minimum deposit is $10")
+            messagebox.showinfo("Invalid Deposit", "The minimum deposit is $10.")
 
 
 def bet():
-
     global balance, bet_amount, bet_placed, player_score, dealer_score, dealer_spot, player_spot
     amount = simpledialog.askfloat("Bet", "Enter amount to bet:", parent=root)
 
@@ -40,7 +39,7 @@ def bet():
     if 10 <= amount <= balance and dealer_score not in [17, 18, 19, 20, 21]:
         balance -= amount
         bet_amount = amount
-        balance_label.config(text=f"Balance: {balance:.2f}", bg='green')
+        balance_label.config(text=f"Balance: ${balance:.2f}", bg='green')
         bet_placed = True
         bet_button.config(state=DISABLED)
         card_button.config(state=NORMAL)
@@ -50,7 +49,7 @@ def bet():
             stand_button.config(state=DISABLED)
 
     else:
-        messagebox.showinfo("Invalid Bet", "The bet must be greater or equal to $10 and less than the balance")
+        messagebox.showinfo("Invalid Bet", "The bet must be greater or equal to $10 and less than the balance.")
         return
 
     if blackjack_status["player"] == "yes" or blackjack_status["dealer"] == "yes":
@@ -59,9 +58,7 @@ def bet():
         bet_button.config(state=NORMAL)
 
 
-
 def stand():
-
     global player_total, dealer_total, player_score, balance, bet_amount, dealer_image_1_show
     player_total = 0
     dealer_total = 0
@@ -80,16 +77,16 @@ def stand():
         if dealer_total > 21:
             dealer_image1 = dealer_image_1_show
             dealer_label_1.config(image=dealer_image1)
-            messagebox.showinfo("Player wins!", "Bust: Dealer busted!")
-            balance += bet_amount*2
-            balance_label.config(text=f"Balance: {balance:.2f}", bg='green')
+            messagebox.showinfo("Player wins!", "Dealer busted!")
+            balance += bet_amount * 2
+            balance_label.config(text=f"Balance: ${balance:.2f}", bg='green')
             return
         elif dealer_total == player_total:
             dealer_image1 = dealer_image_1_show
             dealer_label_1.config(image=dealer_image1)
             messagebox.showinfo("Push!", "Push: It's a tie!")
             balance += bet_amount
-            balance_label.config(text=f"Balance: {balance:.2f}", bg='green')
+            balance_label.config(text=f"Balance: ${balance:.2f}", bg='green')
             return
         elif dealer_total > player_total:
             dealer_image1 = dealer_image_1_show
@@ -100,18 +97,16 @@ def stand():
             dealer_image1 = dealer_image_1_show
             dealer_label_1.config(image=dealer_image1)
             messagebox.showinfo("Player Wins!", "Player Wins!")
-            balance += bet_amount*2
-            balance_label.config(text=f"Balance: {balance:.2f}", bg='green')
+            balance += bet_amount * 2
+            balance_label.config(text=f"Balance: ${balance:.2f}", bg='green')
             return
     else:
         dealer_hit()
         stand()
 
 
-
 def blackjack_shuffle(player):
-
-    global player_total, dealer_total, player_score, balance, bet_amount,\
+    global player_total, dealer_total, player_score, balance, bet_amount, \
         player_spot, dealer_spot, dealer_image1, dealer_image_1_show
 
     if player_spot == 2 and player_score == 21:
@@ -206,12 +201,13 @@ def blackjack_shuffle(player):
             card_button.config(state=DISABLED)
             stand_button.config(state=DISABLED)
             bet_button.config(state=NORMAL)
-            balance_label.config(text=f"Balance: {balance:.2f}", bg='green')
+            balance_label.config(text=f"Balance: ${balance:.2f}", bg='green')
             return
 
         elif blackjack_status["dealer"] == "yes":
             dealer_image1 = dealer_image_1_show
             dealer_label_1.config(image=dealer_image1)
+            balance_label.config(text=f"Balance: ${balance:.2f}", bg='green')
             messagebox.showinfo("Blackjack!", "Blackjack: Dealer Wins!")
             card_button.config(state=DISABLED)
             stand_button.config(state=DISABLED)
@@ -222,13 +218,13 @@ def blackjack_shuffle(player):
         elif blackjack_status["player"] == "yes":
             dealer_image1 = dealer_image_1_show
             dealer_label_1.config(image=dealer_image1)
-            balance_label.config(text=f"Balance: {balance:.2f}", bg='green')
+            balance_label.config(text=f"Balance: ${balance:.2f}", bg='green')
             messagebox.showinfo("Blackjack!", "Blackjack: Player Wins!")
-            balance += bet_amount * 2.5
+            balance += (bet_amount * 2.5)
             card_button.config(state=DISABLED)
             stand_button.config(state=DISABLED)
             bet_button.config(state=NORMAL)
-            balance_label.config(text=f"Balance: {balance:.2f}", bg='green')
+            balance_label.config(text=f"Balance: ${balance:.2f}", bg='green')
             return
 
     else:
@@ -240,7 +236,7 @@ def blackjack_shuffle(player):
             card_button.config(state=DISABLED)
             stand_button.config(state=DISABLED)
             bet_button.config(state=NORMAL)
-            balance_label.config(text=f"Balance: {balance:.2f}", bg='green')
+            balance_label.config(text=f"Balance: ${balance:.2f}", bg='green')
             return
 
         elif blackjack_status["dealer"] == "yes":
@@ -251,7 +247,7 @@ def blackjack_shuffle(player):
                 card_button.config(state=DISABLED)
                 stand_button.config(state=DISABLED)
                 bet_button.config(state=NORMAL)
-                balance_label.config(text=f"Balance: {balance:.2f}", bg='green')
+                balance_label.config(text=f"Balance: ${balance:.2f}", bg='green')
                 return
 
         elif blackjack_status["player"] == "yes":
@@ -259,8 +255,8 @@ def blackjack_shuffle(player):
                 dealer_image1 = dealer_image_1_show
                 dealer_label_1.config(image=dealer_image1)
                 messagebox.showinfo("Blackjack!", "Blackjack: Player Wins!")
-                balance += bet_amount*2.5
-                balance_label.config(text=f"Balance: {balance:.2f}", bg='green')
+                balance += bet_amount * 2.5
+                balance_label.config(text=f"Balance: ${balance:.2f}", bg='green')
                 card_button.config(state=DISABLED)
                 stand_button.config(state=DISABLED)
                 bet_button.config(state=NORMAL)
@@ -276,9 +272,7 @@ def blackjack_shuffle(player):
         return
 
 
-
 def resize_cards(card):
-
     global our_card_image
     our_card_image = Image.open(card)
     our_card_resize = our_card_image.resize((150, 218))
@@ -286,9 +280,7 @@ def resize_cards(card):
     return our_card_image
 
 
-
 def shuffle():
-
     global blackjack_status, player_total, dealer_total, card_button, stand_button
 
     global dealer, player, dealer_spot, player_spot, dealer_score, player_score, deck
@@ -331,16 +323,14 @@ def shuffle():
     for _ in range(2):
         player_hit()
         dealer_hit()
-    root.title(f"Blackjack")
+    root.title("Blackjack")
 
     if balance == 0 and dealer_spot > 2 or player_spot > 2:
         messagebox.showinfo("Insufficient Funds", "You don't have enough funds to play!")
         quit()
 
 
-
 def dealer_hit():
-
     global dealer_spot, player_total, dealer_total, player_score, dealer_image_1_show
 
     global dealer_image1, dealer_image2, dealer_image3, dealer_image4, dealer_image5, is_first_card
@@ -404,14 +394,12 @@ def dealer_hit():
                     dealer_label_1.config(image=dealer_image1)
                     messagebox.showinfo("Dealer wins!", "Dealer wins!")
 
-
             root.title(f"Blackjack")
 
         except:
             root.title("Blackjack | Cards left: 0")
 
         blackjack_shuffle("dealer")
-
 
     if player_spot == 2 and player_score == 21:
         card_button.config(state=DISABLED)
@@ -427,7 +415,6 @@ def dealer_hit():
         card_button.config(state=DISABLED)
         stand_button.config(state=DISABLED)
         bet_button.config(state=NORMAL)
-
 
 
 def player_hit():
@@ -488,11 +475,10 @@ def player_hit():
                     card_button.config(state=DISABLED)
                     stand_button.config(state=DISABLED)
                     bet_button.config(state=NORMAL)
-                    balance += bet_amount*2
                     dealer_image1 = dealer_image_1_show
                     dealer_label_1.config(image=dealer_image1)
                     messagebox.showinfo("Player wins!", "Player Wins!")
-
+                    balance += bet_amount * 2
 
             root.title(f"Blackjack")
 
@@ -500,7 +486,6 @@ def player_hit():
             root.title("Blackjack | Cards left: 0")
 
         blackjack_shuffle("player")
-
 
 
 def deal_cards():
@@ -519,12 +504,10 @@ def deal_cards():
         global player_image
         player_image = resize_cards(f"cards/{card}.png")
 
-        root.title(f"Blackjack")
+        root.title("Blackjack")
 
     except:
         root.title("Blackjack | Cards left: 0")
-
-
 
 
 my_frame = Frame(root, bg='green')
@@ -567,9 +550,9 @@ player_label_5 = Label(player_frame, text='', bg='green')
 player_label_5.grid(row=1, column=4, pady=20, padx=20)
 
 money_frame = Frame(root, bg='green')
-money_frame.pack(side=TOP, pady=10,)
+money_frame.pack(side=TOP, pady=10, )
 
-balance_label = Label(money_frame, text=f"Balance: {balance:.2f}", bg='green')
+balance_label = Label(money_frame, text=f"Balance: ${balance:.2f}", bg='green')
 balance_label.grid(row=0, column=0, columnspan=2, pady=10, sticky='n')
 
 deposit_button = Button(money_frame, text="Deposit", highlightbackground='green', highlightcolor='green',
