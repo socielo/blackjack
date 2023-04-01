@@ -71,7 +71,7 @@ def bet():
                 "Insufficient Funds",
                 "You ran out of funds!"
             )
-            
+
             quit()
 
         else:
@@ -88,7 +88,7 @@ def bet():
 
 
 def stand():
-    global player_total, dealer_total, player_score, balance, bet_amount, dealer_image_1_show
+    global player_total, dealer_total, player_score, balance, bet_amount, dealer_image_1_show, dealer_score
     player_total = 0
     dealer_total = 0
 
@@ -135,7 +135,8 @@ def stand():
 
 
 def blackjack_shuffle(player):
-    global player_total, dealer_total, player_score, balance, bet_amount, player_spot, dealer_spot, dealer_image1, dealer_image_1_show
+    global player_total, dealer_total, player_score, balance, bet_amount, player_spot, dealer_spot, dealer_image1,\
+        dealer_image_1_show
 
     if player_spot == 2 and player_score == 21:
         card_button.config(state=DISABLED)
@@ -206,8 +207,8 @@ def blackjack_shuffle(player):
             for score in dealer_score:
                 dealer_total += score
 
-            if player_total == 21:
-                blackjack_status["player"] = "yes"
+            if dealer_total == 21:
+                blackjack_status["dealer"] = "yes"
                 card_button.config(state=DISABLED)
                 stand_button.config(state=DISABLED)
                 bet_button.config(state=NORMAL)
@@ -245,7 +246,6 @@ def blackjack_shuffle(player):
             card_button.config(state=DISABLED)
             stand_button.config(state=DISABLED)
             bet_button.config(state=NORMAL)
-
             return
 
         elif blackjack_status["player"] == "yes":
@@ -517,8 +517,10 @@ def player_hit():
                     bet_button.config(state=NORMAL)
                     dealer_image1 = dealer_image_1_show
                     dealer_label_1.config(image=dealer_image1)
-                    messagebox.showinfo("Player wins!", "Player Wins!")
                     balance += bet_amount * 2
+                    balance_label.config(text=f"Balance: ${balance:.2f}", bg="green")
+                    messagebox.showinfo("Player wins!", "Player Wins!")
+
 
             root.title(f"Blackjack")
 
