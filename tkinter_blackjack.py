@@ -14,6 +14,7 @@ from tkinter import (
 )
 from PIL import ImageTk, Image
 import random as r
+import pygame.mixer
 
 root = Tk()
 root.title("Blackjack")
@@ -27,6 +28,10 @@ deposited = False
 bet_placed = False
 
 
+def play_sound(sound):
+    pygame.mixer.init()
+    pygame.mixer.music.load(sound)
+    pygame.mixer.music.play()
 def deposit():
     global balance, deposited
     if not deposited:
@@ -98,7 +103,8 @@ def stand():
         if dealer_total > 21:
             dealer_image1 = dealer_image_1_show
             dealer_label_1.config(image=dealer_image1)
-            messagebox.showinfo("Player wins!", "Dealer busted!")
+            play_sound("sounds/win.mp3")
+            messagebox.showinfo("Player wins!", "Dealer busts: Player wins!")
             balance += bet_amount * 2
             balance_label.config(text=f"Balance: ${balance:.2f}", bg="green")
             bet_button.config(state=NORMAL)
@@ -115,6 +121,7 @@ def stand():
         elif dealer_total > player_total and dealer_spot < 5 and dealer_total != 21:
             dealer_image1 = dealer_image_1_show
             dealer_label_1.config(image=dealer_image1)
+            play_sound("sounds/lose.mp3")
             messagebox.showinfo("Dealer Wins!", "Dealer wins!")
             bet_button.config(state=NORMAL)
             card_button.config(state=DISABLED)
@@ -124,6 +131,7 @@ def stand():
             if player_total > dealer_total:
                 dealer_image1 = dealer_image_1_show
                 dealer_label_1.config(image=dealer_image1)
+                play_sound("sounds/win.mp3")
                 messagebox.showinfo("Player Wins!", "Player Wins!")
                 bet_button.config(state=NORMAL)
                 card_button.config(state=DISABLED)
@@ -213,6 +221,7 @@ def blackjack_shuffle(player):
             dealer_image1 = dealer_image_1_show
             dealer_label_1.config(image=dealer_image1)
             balance_label.config(text=f"Balance: ${balance:.2f}", bg="green")
+            play_sound("sounds/lose.mp3")
             messagebox.showinfo("Blackjack!", "Blackjack: Dealer Wins!")
             bet_button.config(state=NORMAL)
             card_button.config(state=DISABLED)
@@ -224,6 +233,7 @@ def blackjack_shuffle(player):
             dealer_label_1.config(image=dealer_image1)
             balance += bet_amount * 2.5
             balance_label.config(text=f"Balance: ${balance:.2f}", bg="green")
+            play_sound("sounds/win.mp3")
             messagebox.showinfo("Blackjack!", "Blackjack: Player Wins!")
             bet_button.config(state=NORMAL)
             card_button.config(state=DISABLED)
@@ -243,6 +253,7 @@ def blackjack_shuffle(player):
             if len(dealer_score) > 2:
                 dealer_image1 = dealer_image_1_show
                 dealer_label_1.config(image=dealer_image1)
+                play_sound("sounds/lose.mp3")
                 messagebox.showinfo("Blackjack", "Blackjack: Dealer Wins!")
                 balance_label.config(text=f"Balance: ${balance:.2f}", bg="green")
                 bet_button.config(state=NORMAL)
@@ -254,6 +265,7 @@ def blackjack_shuffle(player):
             if len(player_score) > 2:
                 dealer_image1 = dealer_image_1_show
                 dealer_label_1.config(image=dealer_image1)
+                play_sound("sounds/win.mp3")
                 messagebox.showinfo("Blackjack!", "Blackjack: Player Wins!")
                 balance += bet_amount * 2.5
                 balance_label.config(text=f"Balance: ${balance:.2f}", bg="green")
@@ -265,6 +277,7 @@ def blackjack_shuffle(player):
     if blackjack_status["player"] == "bust":
         dealer_image1 = dealer_image_1_show
         dealer_label_1.config(image=dealer_image1)
+        play_sound("sounds/lose.mp3")
         messagebox.showinfo("Bust!", "Player Busts!")
         bet_button.config(state=NORMAL)
         card_button.config(state=DISABLED)
@@ -380,6 +393,7 @@ def dealer_hit():
             if dealer_total <= 21:
                 dealer_image1 = dealer_image_1_show
                 dealer_label_1.config(image=dealer_image1)
+                play_sound("sounds/lose.mp3")
                 messagebox.showinfo("Dealer wins!", "Dealer wins!")
                 card_button.config(state=DISABLED)
                 stand_button.config(state=DISABLED)
@@ -440,6 +454,7 @@ def player_hit():
                 dealer_image1 = dealer_image_1_show
                 dealer_label_1.config(image=dealer_image1)
                 balance += bet_amount * 2
+                play_sound("sounds/win.mp3")
                 balance_label.config(text=f"Balance: ${balance:.2f}", bg="green")
                 messagebox.showinfo("Player wins!", "Player Wins!")
                 card_button.config(state=DISABLED)
