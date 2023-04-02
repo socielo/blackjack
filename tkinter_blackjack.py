@@ -117,6 +117,9 @@ def stand():
             messagebox.showinfo("Push!", "Push: It's a tie!")
             balance += bet_amount
             balance_label.config(text=f"Balance: ${balance:.2f}", bg="green")
+            bet_button.config(state=NORMAL)
+            card_button.config(state=DISABLED)
+            stand_button.config(state=DISABLED)
             return
         elif dealer_total > player_total and dealer_spot < 5 and dealer_total != 21:
             dealer_image1 = dealer_image_1_show
@@ -245,6 +248,9 @@ def blackjack_shuffle(player):
             dealer_image1 = dealer_image_1_show
             dealer_label_1.config(image=dealer_image1)
             messagebox.showinfo("Push!", "Push: It's a Tie!")
+            bet_button.config(state=NORMAL)
+            card_button.config(state=DISABLED)
+            stand_button.config(state=DISABLED)
             balance += bet_amount
             balance_label.config(text=f"Balance: ${balance:.2f}", bg="green")
             return
