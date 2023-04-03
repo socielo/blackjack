@@ -1,0 +1,4 @@
+Pillow==9.4.0
+pygame==2.3.0
+types-Pillow==9.4.0.19
+
