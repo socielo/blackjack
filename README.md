@@ -18,4 +18,4 @@ RULES:
 
 
 
-*If you notice any bugs let me know. I'm tired of playing blackjack for hours per day to test low probability bugs*
+*If you notice any bugs let me know. I'm tired of playing blackjack for hours per day to test low probability bugs.*
