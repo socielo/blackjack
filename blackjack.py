@@ -71,7 +71,7 @@ def bet():
         card_button.config(state=NORMAL)
         stand_button.config(state=NORMAL)
     else:
-        if balance == 0:
+        if balance < 5:
             messagebox.showinfo("Insufficient Funds", "You ran out of funds!")
 
             quit()
