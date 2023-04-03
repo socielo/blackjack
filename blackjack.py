@@ -348,6 +348,9 @@ def shuffle():
         for value in values:
             deck.append(f"{value}_of_{suit}")
 
+
+
+
     dealer = []
     player = []
     dealer_score = []
