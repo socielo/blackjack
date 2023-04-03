@@ -1,0 +1,19 @@
+# blackjack
+Blackjack using Tkinter, PIL and Pygame
+
+RULES:
+ - MIN DEPOSIT $10.00
+ - MIN BET $5.00
+ - DEALER STANDS ON SOFT 17
+ - IF YOU DRAW 5 CARDS YOU AUTOMATICALLY WIN
+ - IF YOU HIT 21 YOU AUTOMATICALLY WIN
+ - IF YOU HAVE AN ACE AND ARE GOING TO BUST ALL ACES YOU HAVE ARE CONVERTED TO A 1
+ - ALL RULES ARE APPLICABLE TO THE DEALER AS WELL
+ 
+ 
+ INSTALLATION:
+ - INSTALL ALL MODULES IN REQUIREMENTS.TXT
+
+
+
+*if you notice any bugs let me know. I'm tired of playing blackjack for hours per day to test low probability bugs*
