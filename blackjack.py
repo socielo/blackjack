@@ -305,11 +305,7 @@ def blackjack_shuffle(player):
                     bet_button.config(state=NORMAL)
                     return
 
-        elif (
-            blackjack_status["player"] == "yes"
-            and sum(dealer_score) >= 17
-            and sum(dealer_score) != 21
-        ):
+        elif blackjack_status["player"] == "yes" and sum(dealer_score) >= 17 and sum(dealer_score) != 21:
             if len(player_score) > 2:
                 dealer_image1 = dealer_image_1_show
                 dealer_label_1.config(image=dealer_image1)
@@ -378,10 +374,6 @@ def shuffle():
     deck = []
     for suit in suits:
         for value in values:
-            deck.append(f"{value}_of_{suit}")
-            deck.append(f"{value}_of_{suit}")
-            deck.append(f"{value}_of_{suit}")
-            deck.append(f"{value}_of_{suit}")
             deck.append(f"{value}_of_{suit}")
 
     dealer = []
