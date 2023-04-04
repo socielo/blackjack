@@ -59,18 +59,17 @@ def bet():
     global balance, bet_amount, bet_placed
     amount = simpledialog.askfloat("Bet", "Enter amount to bet:", parent=root)
     if 5 <= amount <= balance:
-        shuffle()
-        card_button.pack(side=LEFT)
-        stand_button.pack(side=LEFT)
-
-    if 5 <= amount <= balance:
         balance -= amount
         bet_amount = amount
+        shuffle()
         balance_label.config(text=f"Balance: ${balance:.2f}", bg="green")
         bet_placed = True
         bet_button.config(state=DISABLED)
         card_button.config(state=NORMAL)
         stand_button.config(state=NORMAL)
+        card_button.pack(side=LEFT)
+        stand_button.pack(side=LEFT)
+
     else:
         if balance < 5:
             messagebox.showinfo("Insufficient Funds", "You ran out of funds!")
