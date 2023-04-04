@@ -26,6 +26,7 @@ balance = 0
 bet_amount = 0
 deposited = False
 bet_placed = False
+player_score = []
 
 
 def play_sound(sound):
@@ -130,7 +131,7 @@ def stand():
             card_button.config(state=DISABLED)
             stand_button.config(state=DISABLED)
             return
-        elif dealer_total == player_total:
+        elif dealer_total == player_total and dealer_spot != 5:
             messagebox.showinfo("Push!", "Push: It's a tie!")
             balance += bet_amount
             dealer_image1 = dealer_image_1_show
@@ -290,11 +291,52 @@ def blackjack_shuffle(player):
 
         elif blackjack_status["player"] == "yes":
             if len(player_score) > 2:
+                while sum(dealer_score) < 17:
+                    dealer_hit()
+                if player_total > dealer_total and dealer_total < 22:
+                    dealer_image1 = dealer_image_1_show
+                    dealer_label_1.config(image=dealer_image1)
+                    balance += bet_amount * 2
+                    play_sound("sounds/win.mp3")
+                    messagebox.showinfo("Player wins!", "21!: Player wins!")
+                    balance_label.config(text=f"Balance: ${balance:.2f}", bg="green")
+                    card_button.config(state=DISABLED)
+                    stand_button.config(state=DISABLED)
+                    bet_button.config(state=NORMAL)
+                    return
+                if dealer_total > 21:
+                    dealer_image1 = dealer_image_1_show
+                    dealer_label_1.config(image=dealer_image1)
+                    balance += bet_amount * 2
+                    play_sound("sounds/win.mp3")
+                    messagebox.showinfo("Player wins!", "Dealer busts: Player wins!")
+                    balance_label.config(text=f"Balance: ${balance:.2f}", bg="green")
+                    card_button.config(state=DISABLED)
+                    stand_button.config(state=DISABLED)
+                    bet_button.config(state=NORMAL)
+                    return
+        elif (
+            blackjack_status["player"] == "yes"
+            and sum(dealer_score) >= 17
+            and sum(dealer_score) != 21
+        ):
+            if len(player_score) > 2:
                 dealer_image1 = dealer_image_1_show
                 dealer_label_1.config(image=dealer_image1)
                 play_sound("sounds/win.mp3")
-                messagebox.showinfo("Blackjack!", "21: Player Wins!")
                 balance += bet_amount * 2
+                messagebox.showinfo("21!", "Player Wins: 21!")
+                balance_label.config(text=f"Balance: ${balance:.2f}", bg="green")
+                card_button.config(state=DISABLED)
+                stand_button.config(state=DISABLED)
+                bet_button.config(state=NORMAL)
+                return
+        elif blackjack_status["player"] == "yes" and sum(dealer_score) == 21:
+            if len(player_score) > 2:
+                dealer_image1 = dealer_image_1_show
+                dealer_label_1.config(image=dealer_image1)
+                balance += bet_amount
+                messagebox.showinfo("Push!", "Push: It's a tie!")
                 balance_label.config(text=f"Balance: ${balance:.2f}", bg="green")
                 card_button.config(state=DISABLED)
                 stand_button.config(state=DISABLED)
@@ -347,9 +389,10 @@ def shuffle():
     for suit in suits:
         for value in values:
             deck.append(f"{value}_of_{suit}")
-
-
-
+            deck.append(f"{value}_of_{suit}")
+            deck.append(f"{value}_of_{suit}")
+            deck.append(f"{value}_of_{suit}")
+            deck.append(f"{value}_of_{suit}")
 
     dealer = []
     player = []
@@ -373,7 +416,7 @@ def dealer_hit():
     global dealer_spot, player_total, dealer_total, player_score, dealer_image_1_show
     global dealer_image1, dealer_image2, dealer_image3, dealer_image4, dealer_image5
 
-    if dealer_spot <= 5:
+    if dealer_spot <= 5 and dealer_total < 17:
         dealer_card = r.choice(deck)
         deck.remove(dealer_card)
         dealer.append(dealer_card)
@@ -420,11 +463,18 @@ def dealer_hit():
             for score in dealer_score:
                 dealer_total += score
 
-            if dealer_total <= 21:
+            if dealer_total < 21 and blackjack_status["player"] != "blackjack":
                 dealer_image1 = dealer_image_1_show
                 dealer_label_1.config(image=dealer_image1)
                 play_sound("sounds/lose.mp3")
                 messagebox.showinfo("Dealer wins!", "Dealer wins!")
+                card_button.config(state=DISABLED)
+                stand_button.config(state=DISABLED)
+                bet_button.config(state=NORMAL)
+            elif dealer_total == 21 and blackjack_status["player"] == "blackjack":
+                dealer_image1 = dealer_image_1_show
+                dealer_label_1.config(image=dealer_image1)
+                messagebox.showinfo("Push!", "Push: It's a tie!")
                 card_button.config(state=DISABLED)
                 stand_button.config(state=DISABLED)
                 bet_button.config(state=NORMAL)
@@ -442,6 +492,12 @@ def player_hit():
         pcard = int(player_card.split("_", 1)[0])
         if pcard == 14:
             player_score.append(11)
+            if sum(player_score) > 21:
+                for card_num, card in enumerate(player_score):
+                    if card == 11:
+                        player_score[card_num] = 1
+                        if sum(player_score) > 21:
+                            blackjack_status["player"] = "bust"
         elif pcard in [11, 12, 13]:
             player_score.append(10)
         else:
@@ -557,6 +613,7 @@ money_frame.pack(
 balance_label = Label(money_frame, text=f"Balance: ${balance:.2f}", bg="green")
 balance_label.grid(row=0, column=0, columnspan=2, pady=10, sticky="n")
 
+
 deposit_button = Button(
     money_frame,
     text="Deposit",
@@ -564,7 +621,7 @@ deposit_button = Button(
     highlightcolor="green",
     command=deposit,
 )
-deposit_button.grid(row=1, column=0, pady=10, sticky="e")
+deposit_button.grid(row=2, column=0, pady=10, sticky="e")
 
 bet_button = Button(
     money_frame,
@@ -574,7 +631,7 @@ bet_button = Button(
     command=bet,
     state=DISABLED,
 )
-bet_button.grid(row=1, column=1, pady=10, sticky="w")
+bet_button.grid(row=2, column=1, pady=10, sticky="w")
 
 button_frame = Frame(root, bg="green")
 button_frame.pack(side=BOTTOM, pady=15)
