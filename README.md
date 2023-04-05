@@ -16,7 +16,7 @@ RULES:
  - Install all modules in requirements.txt
 
 
- User interface built for Unix, but the game still works for Windows machines. Haven't tested for Linux machines, but I'd imagine it works.
+ User interface built for Unix, but the game still works on Windows machines. Haven't tested for Linux machines, but I'd imagine it works.
 
 
 *If you notice any bugs let me know. I'm tired of playing blackjack for hours per day to test low probability bugs.*
