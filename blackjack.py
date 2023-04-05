@@ -364,7 +364,7 @@ def shuffle():
     player_label_5.config(image="")
 
     suits = ["hearts", "diamonds", "clubs", "spades"]
-    values = range(12, 15)
+    values = range(2, 15)
 
     deck = []
     for suit in suits:
