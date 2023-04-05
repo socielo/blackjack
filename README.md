@@ -11,7 +11,7 @@ RULES:
  - All rules are applicable to the dealer as well
  
 
- User interface built for Unix/Linux, but still works for windows.
+ User interface built for Unix/Linux, but still works for Windows machines.
 
  
  
