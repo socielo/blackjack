@@ -10,14 +10,13 @@ RULES:
  - If you have an ace and the total value of your hand exceeds 21, then all aces in your hand are  converted to 1s
  - All rules are applicable to the dealer as well
  
-
- User interface built for Unix/Linux, but still works for Windows machines.
-
  
  
  INSTALLATION:
  - Install all modules in requirements.txt
 
+
+ User interface built for Unix/Linux, but the game still works for Windows machines.
 
 
 *If you notice any bugs let me know. I'm tired of playing blackjack for hours per day to test low probability bugs.*
