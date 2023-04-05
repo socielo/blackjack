@@ -24,8 +24,6 @@ root.configure(bg="green")
 
 balance = 0
 bet_amount = 0
-deposited = False
-bet_placed = False
 player_score = []
 
 
@@ -36,23 +34,22 @@ def play_sound(sound):
 
 
 def deposit():
-    global balance, deposited
-    if not deposited:
-        amount = simpledialog.askfloat(
-            "Deposit", "Enter amount to deposit:", parent=root
+    global balance
+
+    amount = simpledialog.askfloat(
+        "Deposit", "Enter amount to deposit:", parent=root
+    )
+    if amount >= 10:
+        balance += amount
+        balance_label.config(text=f"Balance: ${balance:.2f}", bg="green")
+        deposit_button.config(
+            state=DISABLED, highlightbackground="green", highlightcolor="green"
         )
-        if amount is not None and amount >= 10:
-            balance += amount
-            balance_label.config(text=f"Balance: ${balance:.2f}", bg="green")
-            deposit_button.config(
-                state=DISABLED, highlightbackground="green", highlightcolor="green"
-            )
-            bet_button.config(
-                state=NORMAL, highlightbackground="green", highlightcolor="green"
-            )
-            deposited = True
-        else:
-            messagebox.showinfo("Invalid Deposit", "The minimum deposit is $10.")
+        bet_button.config(
+            state=NORMAL, highlightbackground="green", highlightcolor="green"
+        )
+    else:
+        messagebox.showinfo("Invalid Deposit", "The minimum deposit is $10.")
 
 
 def bet():
@@ -62,8 +59,11 @@ def bet():
         balance -= amount
         bet_amount = amount
         shuffle()
+        if blackjack_status["player"] == "yes" or blackjack_status["dealer"] == "yes":
+            card_button.config(state=DISABLED)
+            stand_button.config(state=DISABLED)
+            bet_button.config(state=NORMAL)
         balance_label.config(text=f"Balance: ${balance:.2f}", bg="green")
-        bet_placed = True
         bet_button.config(state=DISABLED)
         card_button.config(state=NORMAL)
         stand_button.config(state=NORMAL)
@@ -73,21 +73,17 @@ def bet():
     else:
         if balance < 5:
             messagebox.showinfo("Insufficient Funds", "You ran out of funds!")
-
             quit()
-
         else:
             messagebox.showinfo(
                 "Invalid Bet",
                 "The bet must be greater or equal to $5 and less than the balance.",
             )
-        return
 
     if blackjack_status["player"] == "yes" or blackjack_status["dealer"] == "yes":
         card_button.config(state=DISABLED)
         stand_button.config(state=DISABLED)
         bet_button.config(state=NORMAL)
-
 
 def stand():
     global balance, bet_amount
@@ -368,7 +364,7 @@ def shuffle():
     player_label_5.config(image="")
 
     suits = ["hearts", "diamonds", "clubs", "spades"]
-    values = range(2, 15)
+    values = range(12, 15)
 
     deck = []
     for suit in suits:
