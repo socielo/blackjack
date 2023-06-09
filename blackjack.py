@@ -125,7 +125,7 @@ def stand():
             bet_button.config(state=NORMAL)
             card_button.config(state=DISABLED)
             stand_button.config(state=DISABLED)
-            return
+
         elif dealer_total == player_total and dealer_spot != 5:
             messagebox.showinfo("Push!", "Push: It's a tie!")
             balance += bet_amount
@@ -135,7 +135,7 @@ def stand():
             bet_button.config(state=NORMAL)
             card_button.config(state=DISABLED)
             stand_button.config(state=DISABLED)
-            return
+
         elif dealer_total > player_total and dealer_spot < 5 and dealer_total != 21:
             dealer_image1 = dealer_image_1_show
             dealer_label_1.config(image=dealer_image1)
@@ -144,7 +144,7 @@ def stand():
             bet_button.config(state=NORMAL)
             card_button.config(state=DISABLED)
             stand_button.config(state=DISABLED)
-            return
+
         else:
             if player_total > dealer_total and len(dealer_score) < 5:
                 dealer_image1 = dealer_image_1_show
@@ -156,7 +156,7 @@ def stand():
                 stand_button.config(state=DISABLED)
                 balance += bet_amount * 2
                 balance_label.config(text=f"Balance: ${balance:.2f}", bg="green")
-                return
+
     else:
         dealer_hit()
         stand()
@@ -235,7 +235,7 @@ def blackjack_shuffle(player):
             bet_button.config(state=NORMAL)
             card_button.config(state=DISABLED)
             stand_button.config(state=DISABLED)
-            return
+
 
         elif blackjack_status["dealer"] == "yes":
             dealer_image1 = dealer_image_1_show
@@ -246,7 +246,7 @@ def blackjack_shuffle(player):
             bet_button.config(state=NORMAL)
             card_button.config(state=DISABLED)
             stand_button.config(state=DISABLED)
-            return
+
 
         elif blackjack_status["player"] == "yes":
             dealer_image1 = dealer_image_1_show
@@ -258,7 +258,7 @@ def blackjack_shuffle(player):
             bet_button.config(state=NORMAL)
             card_button.config(state=DISABLED)
             stand_button.config(state=DISABLED)
-            return
+
 
     else:
         if blackjack_status["dealer"] == "yes" and blackjack_status["player"] == "yes":
@@ -270,7 +270,7 @@ def blackjack_shuffle(player):
             stand_button.config(state=DISABLED)
             balance += bet_amount
             balance_label.config(text=f"Balance: ${balance:.2f}", bg="green")
-            return
+
 
         elif blackjack_status["dealer"] == "yes":
             if len(dealer_score) > 2:
@@ -282,7 +282,7 @@ def blackjack_shuffle(player):
                 bet_button.config(state=NORMAL)
                 card_button.config(state=DISABLED)
                 stand_button.config(state=DISABLED)
-                return
+
 
         elif blackjack_status["player"] == "yes":
             if len(player_score) > 2:
@@ -298,7 +298,7 @@ def blackjack_shuffle(player):
                     card_button.config(state=DISABLED)
                     stand_button.config(state=DISABLED)
                     bet_button.config(state=NORMAL)
-                    return
+
 
         elif blackjack_status["player"] == "yes" and sum(dealer_score) >= 17 and sum(dealer_score) != 21:
             if len(player_score) > 2:
@@ -311,7 +311,7 @@ def blackjack_shuffle(player):
                 card_button.config(state=DISABLED)
                 stand_button.config(state=DISABLED)
                 bet_button.config(state=NORMAL)
-                return
+
         elif blackjack_status["player"] == "yes" and sum(dealer_score) == 21:
             if len(player_score) > 2:
                 dealer_image1 = dealer_image_1_show
@@ -322,7 +322,7 @@ def blackjack_shuffle(player):
                 card_button.config(state=DISABLED)
                 stand_button.config(state=DISABLED)
                 bet_button.config(state=NORMAL)
-                return
+
 
     if blackjack_status["player"] == "bust":
         dealer_image1 = dealer_image_1_show
@@ -332,7 +332,7 @@ def blackjack_shuffle(player):
         bet_button.config(state=NORMAL)
         card_button.config(state=DISABLED)
         stand_button.config(state=DISABLED)
-        return
+
 
 
 def resize_cards(card):
@@ -448,7 +448,7 @@ def dealer_hit():
                 card_button.config(state=DISABLED)
                 stand_button.config(state=DISABLED)
                 bet_button.config(state=NORMAL)
-                return
+
             elif dealer_total == 21 and blackjack_status["player"] == "blackjack":
                 dealer_image1 = dealer_image_1_show
                 dealer_label_1.config(image=dealer_image1)
@@ -456,7 +456,7 @@ def dealer_hit():
                 card_button.config(state=DISABLED)
                 stand_button.config(state=DISABLED)
                 bet_button.config(state=NORMAL)
-                return
+
 
     blackjack_shuffle("dealer")
 
@@ -525,7 +525,7 @@ def player_hit():
                 card_button.config(state=DISABLED)
                 stand_button.config(state=DISABLED)
                 bet_button.config(state=NORMAL)
-                return
+
 
     blackjack_shuffle("player")
 
